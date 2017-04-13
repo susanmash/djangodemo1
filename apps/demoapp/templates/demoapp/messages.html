@@ -1,0 +1,5 @@
+{% block container %}
+  {% for msg in messages %}
+    <p class="alert-{{msg.tags}} err">{{msg}}</p>
+  {% endfor %}
+{% endblock %}

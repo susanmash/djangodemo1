@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Quotes Registration &amp; Login</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'demoapp/normalize.css' %}" >
+    <link rel="stylesheet" href="{% static 'demoapp/loginreg.css' %}" >
+  </head>
+  <body>
+
+    <header class="main-header">
+      <h1 class='main-title'><a href="/">Fun Random Quotes</a> </h1>
+      <a href="/logout" class="pull-right"><button type="button" name="button" class="btn btn-logout">Logout</button> </a>
+    </header>
+    <div class="container-fluid">
+      <div class="row">
+        <form class="col-sm-6 form reg" action="/register" method="POST">
+          {% csrf_token %}
+          <div class="container err-wrap">
+            {% include 'demoapp/messages.html' %}
+            {% block content %}
+
+            {% endblock %}
+          </div>
+          <h2>Create Account</h2>
+          <a href="/loginForm">Already have an account? Click to login</a>
+
+          <div class="form-group">
+              <label for="inputName">Name</label>
+              <input type="text" class="form-control" id="inputName" name='name' placeholder="Full Name">
+          </div>
+          <div class="form-group">
+              <label for="inputEmail">Email</label>
+              <input type="email" class="form-control" id="inputEmail" name='email' placeholder="Email">
+          </div>
+          <div class="form-group">
+              <label for="inputPassword">Password</label>
+              <input type="password" class="form-control" id="inputPassword" name='password' data-minLength="6" data-error="some error" placeholder="Password" required />
+              <span class="help-block with-errors"></span>
+          </div>
+          <div class="form-group">
+              <label for="inputConfPassword">Confirm Password</label>
+              <input type="password" class="form-control" id="inputConfPassword" name='conf_password' placeholder="Confirm Password" data-match='#conf_password' data-minLength="6" data-match-error='some error 2' required />
+              <span class="help-block with-errors"></span>
+          </div>
+          <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+        <div class="col-sm-6 guest">
+            <h2 class="panel-body">View as Guest</h2>
+            <p class="panel-body">*Number of quotes limited</p>
+            <a href="/guest_quotes"><button type="button" name="button" class="btn btn-guest">See Quotes!</button></a>
+
+        </div>
+
+      </div>
+
+    </div>
+    <footer class="d"><p>FlaskDemo &copy; 2017</p>
+      <span class="info-icon pull-right"> <i class='glyphicon glyphicon-heart-empty'></i> <i class='glyphicon glyphicon-option-horizontal'></i> <i class='glyphicon glyphicon-cog'></i> <i class='glyphicon glyphicon-option-horizontal'></i> <i class='glyphicon glyphicon-send'></i></span>
+    </footer>
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js'></script>
+    <script>
+      $(document).ready(function(){
+        $('form.reg').bootstrapValidator({
+        fields: {
+            name: {
+                validators: {
+                        stringLength: {
+                        min: 2,
+                    },
+                        notEmpty: {
+                        message: 'Please supply your first name'
+                    }
+                }
+            },
+            email: {
+                validators: {
+                    notEmpty: {
+                        message: 'Please supply your email address'
+                    },
+                    emailAddress: {
+                        message: 'Please supply a valid email address'
+                    }
+                }
+            },
+            password: {
+                validators: {
+                      stringLength: {
+                        min: 6,
+                        message:'Password must be at least 6 characters.'
+                    },
+                    notEmpty: {
+                        message: 'Password must be at least 6 characters.'
+                    },
+                    identical: {
+                      field: 'conf_password',
+                      message: 'Confirm password below, both password fields must match.'
+                    }
+                  }
+                },
+              conf_password:{
+                validators:{
+                  identical: {
+                    field: 'password',
+                    message: 'Confirmation password entry does not match password above.'
+                  }
+                }
+              }
+            }
+        })
+        .on('success.form.bv', function(e) {
+            $('#success_message').slideDown({ opacity: "show" }, "slow")
+              $('.reg').data('bootstrapValidator').resetForm();
+              e.preventDefault();
+              var $form = $(e.target);
+              var bv = $form.data('bootstrapValidator');
+      });
+    });
+    </script>
+
+
+
+  </body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Quotes</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'demoapp/normalize.css' %}" >
+    <link rel="stylesheet" href="{% static 'demoapp/loginreg.css' %}" >
+    <link rel="stylesheet" href="{% static 'demoapp/quotes.css' %}" >
+  </head>
+  <body>
+    <header class="main-header">
+      <h1 class='main-title'><a href="/">Fun Programming Quotes</a> </h1>
+      <a href="/logout" class="pull-right"><button type="button" name="button" class="btn btn-logout">Logout</button> </a>
+      {% if messages %}
+        {% for msg in messages %}
+          <p {% if msg.tags %} class="{{msg.tags}}" {% endif %}>{{msg.first}}</p>
+        {% endfor %}
+      {% endif %}
+    </header>
+    <div class="container-fluid jumbotron">
+      <div class="row">
+        <h2 class="q-title">Click button to generate quotes...</h2>
+        <button id="quote-button" class="btn">Button</button>
+      </div>
+     <aside id="quotes" class='row pquote'>
+        <blockquote class="quote-card green-card">
+          <h2 class="q-text"></h2>
+          <p class="q-text"></p>
+        </blockquote>
+      </aside>
+    </div>
+    <footer class="d"><p>FlaskDemo &copy; 2017</p>
+      <span class="info-icon pull-right"> <i class='glyphicon glyphicon-heart-empty'></i> <i class='glyphicon glyphicon-option-horizontal'></i> <i class='glyphicon glyphicon-cog'></i> <i class='glyphicon glyphicon-option-horizontal'></i> <i class='glyphicon glyphicon-send'></i></span>
+    </footer>
+   <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+   <script>
+     $(document).ready(function(){
+       $("#quotes").hide();
+       function randomQuote(){
+         $.ajax({
+            url: "http://api.forismatic.com/api/1.0/?",
+            dataType: "jsonp",
+            data: "method=getQuote&format=jsonp&lang=en&jsonp=?",
+            success: function( response ) {
+              $("blockquote").html("<h2 class='q-text'>" +
+                response.quoteText + "</h2><p class='q-text'>&dash; " + response.quoteAuthor + " &dash;</p>");
+              $("#tweet").attr("href", "http://twitter.com/home/?status=" + response.quoteText +
+                ' (' + response.quoteAuthor + ')');
+            }
+
+        });
+
+      }
+
+      $(function() {
+        randomQuote();
+      });
+
+      $("button#quote-button").click(function(){
+        randomQuote();
+        $('#quotes').fadeIn();
+      });
+     });
+   </script>
+  </body>
+</html>
